@@ -1,12 +1,8 @@
 'use strict';
 
-import { dataProducts } from './data-products.js';
+// import { dataProducts } from './data-products.js';           // заменила на API
 import { swiper } from './slider.js';
-// ---------------------------------------------------------------------------------------------------------------
-// slider Swiper start
 
-
-// slider Swiper end
 // --------------------------------------------------------------------------------------------------------------
 // CREATE ELEMENT
 function createElement(tag, className, text, type, placeholder) {                   // CREATE ELEMENT
@@ -29,39 +25,71 @@ function createElement(tag, className, text, type, placeholder) {               
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------
-// Cards start
 
-let cardsContainer = document.querySelector('.cards__row');                        
+let cardsContainer = document.querySelector('.cards__row');   
+const API = 'https://630a782f3249910032862e58.mockapi.io/wildberries/api/v1/cards';
+let productName = JSON.parse(localStorage.getItem('productName')) ?? [];
+const input = document.querySelector('.navbar__input')
+// ------------------------------------------------------------------------------------поиск по названию товара
 
-// -----------------------------------------------------------
 
-function render(object) {                                                           // RENDER
-    cardsContainer.innerHTML = '';
-    object.forEach((dataProducts) => {
-        cardsContainer.innerHTML += createCard(dataProducts);
-    });
-}
-// -----------------------------------------------------------
+// ------------------------------------------------------------------------------------
+function getCards() {                   
+    fetch(API)
+        .then((response) => response.json())
+        .then((data) => {
+            productName = data;
+            render(data)
+            saveData(data)   
+    })
 
-function createCard(dataProducts) {                                                 // CREATE CARD
-    return `           
-        <div class="card">
-            <img src="${dataProducts.image}" class="card-img-top" alt="..." id = ${dataProducts.id}>
-            <div class="card-body">
-                <p class="card-text">${dataProducts.cost}$</p>
-                <h5 class ="card-title">${dataProducts.name}</h5>
-                <a href="#" class="btn btn-primary">В корзину</a>
-            </div>
-        </div>                
-    `
-}
-render(dataProducts);
-
-// -----------------------------------------------------------
-function saveData(data) {                                                           // SAVE IN LOCAL STORAGE 
-    localStorage.setItem('characters', JSON.stringify(data));
 };
+
 // -----------------------------------------------------------
+
+function render(array) { 
+    for (let i = 0; i <= 30; i++) {             // не лишнее ли это?  (там и так только 30 шт отдает)
+        cardsContainer.innerHTML = '';
+        array.forEach((el) => {
+            cardsContainer.innerHTML += `                           
+                <div class="card">
+                    <img src="${el.image}" class="card-img-top" alt="..." id = ${el.id}>
+                    <div class="card-body">
+                        <p class="card-text">${el.cost}$</p>
+                        <h5 class ="card-title">${el.name}</h5>
+                        <a href="#" class="btn btn-primary">В корзину</a>
+                    </div>
+                </div>                
+            `;   
+        });     
+    }
+}
+getCards();
+
+// -----------------------------------------------------------
+
+function saveData(data) {                                                        
+    localStorage.setItem('productName', JSON.stringify(data));
+};
+// ------------------------------------------------------------
+
+input.addEventListener('input', ({ target }) => {        // при вводе в инпут фильтрует по названиям и отдает подходящие значения
+    let tempArray = productName.filter((el) =>
+        (el.name + el.cost)
+            .toLowerCase()
+            .includes(target.value)                     // как сделать подсветку совпадающих букв при вводе в инпут?
+    );
+    render(tempArray);
+});
+
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
+// При клике на картинку - увеличиваем (присвоить новый класс, как вариант)
+
+// Модальное окно при нажатии на кнопку корзины
+
+// Корзина товаров
+
 
 
 
