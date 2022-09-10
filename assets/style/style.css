@@ -73,6 +73,7 @@ main {
 }
 
 .banner__pagination {
+  z-index: 1;
   position: absolute;
   bottom: 0
 }
@@ -164,6 +165,57 @@ main {
   flex-grow: 1;
   max-width: 120px;
 }
+
+
+/* ------------------------------------------------------------------------ */
+/* Modal start */
+/* ------------------------------------------------------------------------ */
+.modals__modal-overlay {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.modals__modal-overlay_visible {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s;
+}
+
+.modals__modal {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  height: 500px;
+  display: none;
+}
+
+.modals__modal_visible {
+  display: block;
+}
+
+
+/* ------------------------------------------------------------------------ */
+/* Modal end */
+/* ------------------------------------------------------------------------ */
+
+
+
+
+
 
 /* ------------------------------------------------------------------------ */
 /* footer start */
