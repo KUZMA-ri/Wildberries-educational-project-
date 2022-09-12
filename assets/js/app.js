@@ -1,122 +1,151 @@
 'use strict';
-
-// import { dataProducts } from './data-products.js';           // заменила на API
 import { swiper } from './slider.js';
+import { createElement } from './helpers.js';
 
-// --------------------------------------------------------------------------------------------------------------
-// CREATE ELEMENT
-function createElement(tag, className, text, type, placeholder) {                   // CREATE ELEMENT
-    let el = document.createElement(tag);
-    text ? (el.innerText = text) : null;
-
-    if (className) {
-        let arr = className.split(' ');
-        for (let elArr of arr) {
-            el.classList.add(elArr);
-        }
-    }
-
-    if(tag === 'input') {
-            type ? (el.type = type) : null;
-            placeholder ? (el.placeholder = placeholder) : null;
-    }
-    return el;
-};
-
-
-// -------------------------------------------------------------------------------------------------------------------------------------
-
-let cardsContainer = document.querySelector('.cards__row');   
+// -------------------------------------------------------------------------------------------------------------------------------------------------
+let cardsContainer = document.querySelector('.cards__row');  
 const API = 'https://630a782f3249910032862e58.mockapi.io/wildberries/api/v1/cards';
 let productName = JSON.parse(localStorage.getItem('productName')) ?? [];
-const input = document.querySelector('.navbar__input')
-// ------------------------------------------------------------------------------------поиск по названию товара
+const input = document.querySelector('.navbar__input');
 
-
-// ------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------
 function getCards() {                   
     fetch(API)
         .then((response) => response.json())
         .then((data) => {
             productName = data;
             render(data)
-            saveData(data)   
+            saveData(data)
     })
-
+    .catch((error) => {
+        console.log(error)
+    });
 };
-
-// -----------------------------------------------------------
-
-function render(array) { 
-    for (let i = 0; i <= 30; i++) {             // не лишнее ли это?  (там и так только 30 шт отдает)
-        cardsContainer.innerHTML = '';
-        array.forEach((el) => {
-            cardsContainer.innerHTML += `                           
-                <div class="card">
-                    <img src="${el.image}" class="card-img-top" alt="..." id = ${el.id}>
-                    <div class="card-body">
-                        <p class="card-text">${el.cost}$</p>
-                        <h5 class ="card-title">${el.name}</h5>
-                        <a href="#" class="btn btn-primary">В корзину</a>
-                    </div>
-                </div>                
-            `;   
-        });     
-    }
-}
-getCards();
-
-// -----------------------------------------------------------
 
 function saveData(data) {                                                        
     localStorage.setItem('productName', JSON.stringify(data));
 };
-// ------------------------------------------------------------
 
-input.addEventListener('input', ({ target }) => {        // при вводе в инпут фильтрует по названиям и отдает подходящие значения
+// ################################################################################################################################################
+// RENDER START
+
+function render(array) { 
+    for (let i = 0; i <= 30; i++) {            
+        cardsContainer.innerHTML = '';
+        array.forEach((el) => {
+            cardsContainer.innerHTML += `                           
+                <div class="card" data-id = "${el.id}">
+                    <img src="${el.image}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <p class="card-text" id = "price">${el.cost} $</p>
+                        <h5 class ="card-title" id = "name">${el.name}</h5>
+                        <button class="btn btn-primary" data-cart>В корзину</button>
+                    </div>
+                </div>                
+            `; 
+        })
+    }
+    return
+}
+getCards();
+
+// RENDER END
+// ################################################################################################################################################
+
+// ################################################################################################################################################
+// CART START
+
+window.addEventListener('click', function (event) {
+    if(event.target.hasAttribute('data-cart')) {    // проверяем, что кликнули на кнопке "Купить"
+        const card = event.target.closest('.card'); // находим карточку с товаром, внутри которой был совершен клик
+
+        const productInfo = {                       // собираем данные с выбранного товара и записываем их в объект
+            id: card.dataset.id,
+            imgSrc: card.querySelector('.card-img-top').getAttribute('src'),
+            title: card.querySelector('.card-title').innerText,
+            price: card.querySelector('.card-text').innerText,
+        }
+
+        // создаем разметку и подставляем собранные данные
+        const cartItemHTML = `                     
+            <div class="cart-item" data-id = "${productInfo.id}">
+            <div class="cart-item__top">
+                <div class="cart-item__img">
+                    <img src="${productInfo.imgSrc}" alt="${productInfo.title}">
+                </div>
+                <div class="cart-item__desc">
+                    <div class="cart-item__title">${productInfo.title}</div>
+                    <div class="cart-item__price" data-price>${productInfo.price}</div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        modalCartWrapper.insertAdjacentHTML('beforeend', cartItemHTML);
+
+        function calcCartPrice() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            const totalPriceEl = document.querySelector('.card-total__price');
+            let totalPrice = 0;
+
+            cartItems.forEach(function (item) {
+                const currentPrice = parseInt(item.querySelector('[data-price]').innerText)
+                totalPrice += currentPrice;
+            });
+            totalPriceEl.innerText = totalPrice;                // отображаем цену на странице
+        }
+        calcCartPrice();
+    }
+});
+// CART END
+// ################################################################################################################################################
+
+
+// ################################################################################################################################################
+// SEARCH START
+
+input.addEventListener('input', ({ target }) => {                       // при вводе в инпут фильтрует по названиям и отдает подходящие значения
     let tempArray = productName.filter((el) =>
         (el.name + el.cost)
             .toLowerCase()
-            .includes(target.value)                     // как сделать подсветку совпадающих букв при вводе в инпут?
+            .includes(target.value)                                                   
     );
     render(tempArray);
 });
 
-// --------------------------------------------------------------------------------------------------------------------------------------------
+// SEARCH END
+// ###############################################################################################################################################
 
-// При клике на картинку - увеличиваем (присвоить новый класс, как вариант)
-
-
+// -----------------------------------------------------------------------------------------------------------------------------------------------
 
 // ###############################################################################################################################################
 // MODAL START
-// ###############################################################################################################################################
-const btn = document.querySelector('.navbar__cart');
-const modal = document.querySelector('.modals__modal-overlay');
 
+const btn = document.querySelector('.navbar__cart');                                            // кнопка корзины
+const modalOverlay = document.querySelector('.modals__modal-overlay'); 
+const modalCartWrapper = document.querySelector('.modals__cart-wrapper');                       // overlay                                                
 
 btn.addEventListener('click', (e) => {
-    let path = e.currentTarget.getAttribute('data-path');                                            // на случай,если кнопок и модалок несколько
+    let path = e.currentTarget.getAttribute('data-path');                                       // на случай,если кнопок и модалок несколько
     document.querySelector(`[data-target = "${path}"]`).classList.add('modals__modal_visible');
-    modal.classList.add('modals__modal-overlay_visible');                                            //  при нажатии на кнопку корзины добавляем класс c visible
+    modalOverlay.classList.add('modals__modal-overlay_visible'); 
+
+    if(modalOverlay.classList.contains('modals__modal-overlay_visible')) {                      //  при нажатии на кнопку корзины добавляем класс c visible
+        document.body.style.position = 'fixed';                                                 // запрещаем прокрутку body при открытом модальном окне
+        document.body.style.top = `-${window.scrollY}px`;
+    }                                          
 });
 
-modal.addEventListener('click', (e) => {
-    if(e.target === modal) {
-        modal.classList.remove('modals__modal-overlay_visible');                                     // при нажатии на свободную область модальное окно исчезает
+modalOverlay.addEventListener('click', (e) => {
+    if(e.target === modalOverlay) {
+        modalOverlay.classList.remove('modals__modal-overlay_visible');                         // при нажатии на свободную область модальное окно исчезает
+        document.body.style.position = 'relative';
     }
-});     
-        // для добавления в корзину определенного товара возможно понадобится этот кусок кода
-        // btns.forEach((el) => {           // кнопки " купить", пробегаемся форичем
-        // el.addEventListener('click', (e) => {       // ловит событие на определенной кнопке
-        //  let nameBtn = e.currentTarget.getAttribute('прописать дата-атрибут для кнопки добавления в корзину')
-        // })
-        // })
-// ################################################################################################################################################
+});  
+
 // MODAL END
 // ################################################################################################################################################
-// ------------------------------------------------------------
-// Корзина товаров
+
 
 
 

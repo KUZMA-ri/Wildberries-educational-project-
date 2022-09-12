@@ -54,7 +54,6 @@
         </div>
         <!-- Navbar end -->
     
-    
         <!-- Banner -->
         <div class="banner">
             <div class="container banner__container">
@@ -92,7 +91,9 @@
         <div class="cards">
             <div class="container">
                 <div class="row cards__row">
-                    <!-- js code -->
+                    <div class="card" id="card">
+
+                    </div>
                 </div>                
             </div> 
         </div>
@@ -140,7 +141,21 @@
         <!-- Modal start -->
         <div class="modals">
             <div class="modals__modal-overlay">
-                <div class="modals__modal" data-target="one"></div>
+                <div class="modals__modal" data-target="one">
+                    <div class="modals__cart-wrapper">
+                        <!-- JS code -->
+                    </div>
+                    <div class="modals__card-total">
+                        <p>
+                            <span class="card-total__text">Итого:</span>
+                            <span class="card-total__price"></span>
+                            <span class="card-total__сurrency">$</span>
+                        </p>
+                    </div>
+                    
+                    
+                    
+                </div>
             </div>
         </div>
         <!-- Modal end -->
@@ -191,13 +206,7 @@
             </div>
         </div>
 
-        <!-- Footer end -->
-
-
-        
-    
-        
-        
+        <!-- Footer end -->       
     </main>
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
