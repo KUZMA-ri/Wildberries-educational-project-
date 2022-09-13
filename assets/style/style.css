@@ -1,9 +1,14 @@
 :root {
   --gutter: 15px;
+  --color-light: #fff;
+  --color-dark: #000;
+  --color-primary:  #610785;
+  --pink: #ca1cd3;
+  --dark-violet: #18081e;
 }
 
 main {
-  background: linear-gradient(90deg, #ca1cd3 15%, #610785 100%);
+  background: linear-gradient(90deg, var(--pink) 15%, var(--color-primary) 100%);
   width: 100%;
   overflow: hidden;
 }
@@ -52,7 +57,7 @@ main {
   width: 50%;
   height: 60px;
   padding: 10px 20px;
-  background-color: #fff;
+  background-color: var(--color-light);
   font-size: 20px;
   border-radius: 30px;
   opacity: 0.5;
@@ -94,7 +99,7 @@ main {
 .banner {
   max-width: 100%;
   position: relative;
-  background-color: #fff;
+  background-color: var(--color-light);
   border-radius: 20px 20px 0 0;
   padding: 30px 0;
 }
@@ -125,7 +130,7 @@ main {
 
 /* CARDS START */
 .cards {
-  background-color: #fff;
+  background-color: var(--color-light);
   
 }
 .cards__row  {
@@ -172,14 +177,31 @@ main {
   margin-bottom: 20px;
 }
 
-.btn-primary{
+.card-btn {
   margin-top: auto;
+  color: var(--color-light);
+  text-transform: uppercase;
+  background-color: var(--color-primary);
+  border: 2px solid var(--dark-violet);
+  box-shadow: 0px -5px 5px -5px rgba(34, 60, 80, 0.6) inset;
+}
+
+.card-btn:hover {
+  background-color: inherit;
+  border: 2px solid var(--dark-violet);
+  color:  var(--color-primary);
+}
+
+.card-btn:checked {
+  background-color: inherit;
+  border: 2px solid var(--dark-violet);
+  color:  var(--color-primary);
 }
 
 /* --------------------------------- */
 /* Brands start */
 .brands {
-  background-color: #fff;
+  background-color: var(--color-light);
   padding: 50px 20px 50px 20px;
 }
 .brands__container {
@@ -224,7 +246,7 @@ main {
 }
 
 .modals__modal {
-  background-color: #fff;
+  background-color:var(--color-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -243,10 +265,26 @@ main {
   padding: 15px;
   display: flex;
   flex-wrap: wrap;
+  overflow-y: scroll;
+}
+
+.modals__card-total {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 -15px;
-  overflow-y: scroll;
+}
+.modals__btn-delete{
+  font-size: 18px;
+  color: var(--color-light);
+  padding: 10px;
+  background-color: #010101;
+  border: 2px solid  var(--color-primary);
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.modals__btn-delete:hover {
+  background-color: var(--color-primary);
 }
 
 .cart-item {
@@ -308,8 +346,8 @@ main {
 }
 .cart-item__price {
   font-size: 14px;
-  background-color: #610785;
-  color: #fff;
+  background-color:var(--color-primary);
+  color: var(--color-light);
   padding: 5px;
   text-align: center;
   margin-top: auto;
@@ -317,8 +355,8 @@ main {
 
 .modals__card-total {
   font-size: 25px;
-  background: #000;
-  color: #fff;
+  background: var(--color-dark);
+  color: var(--color-light);
   padding: 15px;
   text-align: end;
 }
@@ -331,7 +369,7 @@ main {
 /* ------------------------------------------------------------------------ */
 .footer {
   padding: 30px 0;
-  background-color: #610785;
+  background-color: var(--color-primary);
 }
 
 .footer__row{
@@ -348,7 +386,7 @@ main {
   font-family: 'Playfair Display';
   font-size: 22px;
   font-weight: 600;
-  color: #fff;
+  color:var(--color-light);
   margin-bottom: 30px;
   margin-top: 20px;
 }
@@ -356,14 +394,14 @@ main {
 .footer__link {
   font-family: 'Playfair Display';
   font-size: 18px;
-  color: #fff;
+  color:var(--color-light);
   opacity: 0.7;
   margin-bottom: 20px;
   transition: all 0.2s;
 }
 
 .footer__link:hover {
-  color: #fff;
+  color:var(--color-light);
   opacity: 1;
 }
 
@@ -373,15 +411,15 @@ main {
   font-family: 'Playfair Display';
   font-size: 16px;
   text-transform: uppercase;
-  color: #fff;
+  color:var(--color-light);
   opacity: 0.8;
 }
 
 .footer__copy-text::before {
   content: '';
   display: block;
-  border: 1px solid #fff;
-  background-color: #fff;
+  border: 1px solid var(--color-light);
+  background-color: var(--color-light);
   opacity: 0.8;
   margin-bottom: 25px;
 }
@@ -395,6 +433,6 @@ main {
 
 /* ползунок скроллбара */
 ::-webkit-scrollbar-thumb {
-  background-color:  #610785;
+  background-color:  var(--color-primary);
   border-radius: 9em;
 }

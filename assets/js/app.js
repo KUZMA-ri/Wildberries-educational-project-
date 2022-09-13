@@ -21,6 +21,7 @@ function getCards() {
         console.log(error)
     });
 };
+// ------------------------------------------------------------------------------------------------------------------------------------------------
 
 function saveData(data) {                                                        
     localStorage.setItem('productName', JSON.stringify(data));
@@ -39,7 +40,7 @@ function render(array) {
                     <div class="card-body">
                         <p class="card-text" id = "price">${el.cost} $</p>
                         <h5 class ="card-title" id = "name">${el.name}</h5>
-                        <button class="btn btn-primary" data-cart>В корзину</button>
+                        <button class="btn card-btn" data-cart>В корзину</button>
                     </div>
                 </div>                
             `; 
@@ -57,6 +58,11 @@ getCards();
 
 window.addEventListener('click', function (event) {
     if(event.target.hasAttribute('data-cart')) {    // проверяем, что кликнули на кнопке "Купить"
+        // event.target.style. backgroundColor = 'inherit';
+        // event.target.style. border = '2px solid #18081e';
+        // event.target.style. color = 'black';
+        // event.target.innerText = 'В КОРЗИНЕ';
+
         const card = event.target.closest('.card'); // находим карточку с товаром, внутри которой был совершен клик
 
         const productInfo = {                       // собираем данные с выбранного товара и записываем их в объект
@@ -83,19 +89,29 @@ window.addEventListener('click', function (event) {
 
         modalCartWrapper.insertAdjacentHTML('beforeend', cartItemHTML);
 
+        // let cartArray = [];
+        // localStorage.setItem('cart', JSON.stringify(productInfo));
+        // let item = localStorage.getItem('cart');
+        // cartArray.push(item);
+
         function calcCartPrice() {
             const cartItems = document.querySelectorAll('.cart-item');
             const totalPriceEl = document.querySelector('.card-total__price');
             let totalPrice = 0;
 
             cartItems.forEach(function (item) {
-                const currentPrice = parseInt(item.querySelector('[data-price]').innerText)
+                const currentPrice = parseInt(item.querySelector('[data-price]').innerText);
                 totalPrice += currentPrice;
             });
             totalPriceEl.innerText = totalPrice;                // отображаем цену на странице
         }
         calcCartPrice();
-    }
+    } 
+    
+    if (event.target.hasAttribute('data-delete')){
+        modalCartWrapper.innerHTML = '';
+        setTimeout(function() { alert("Корзина успешно очищена"); }, 1000);
+    } 
 });
 // CART END
 // ################################################################################################################################################
@@ -122,11 +138,11 @@ input.addEventListener('input', ({ target }) => {                       // пр�
 // MODAL START
 
 const btn = document.querySelector('.navbar__cart');                                            // кнопка корзины
-const modalOverlay = document.querySelector('.modals__modal-overlay'); 
-const modalCartWrapper = document.querySelector('.modals__cart-wrapper');                       // overlay                                                
+const modalOverlay = document.querySelector('.modals__modal-overlay');                          // overlay     
+const modalCartWrapper = document.querySelector('.modals__cart-wrapper');                                                                 
 
 btn.addEventListener('click', (e) => {
-    let path = e.currentTarget.getAttribute('data-path');                                       // на случай,если кнопок и модалок несколько
+    let path = e.currentTarget.getAttribute('data-path');                                       
     document.querySelector(`[data-target = "${path}"]`).classList.add('modals__modal_visible');
     modalOverlay.classList.add('modals__modal-overlay_visible'); 
 
