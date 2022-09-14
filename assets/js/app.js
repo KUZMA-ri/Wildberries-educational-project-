@@ -42,12 +42,17 @@ function render(array) {
                         <h5 class ="card-title" id = "name">${el.name}</h5>
                         <button class="btn card-btn" data-cart>В корзину</button>
                     </div>
-                </div>                
+                </div> 
+                <div class="popup">
+                    <span class="popup__close">&times;</span>
+                    <img class = "popup__img" src="${el.image}" alt="">
+                </div>               
             `; 
         })
     }
     return
 }
+
 getCards();
 
 // RENDER END
@@ -77,7 +82,7 @@ window.addEventListener('click', function (event) {
             <div class="cart-item" data-id = "${productInfo.id}">
             <div class="cart-item__top">
                 <div class="cart-item__img">
-                    <img src="${productInfo.imgSrc}" alt="${productInfo.title}">
+                    <img src="${productInfo.imgSrc}" alt="${productInfo.title}" data-cardImg>
                 </div>
                 <div class="cart-item__desc">
                     <div class="cart-item__title">${productInfo.title}</div>
@@ -93,26 +98,37 @@ window.addEventListener('click', function (event) {
         // localStorage.setItem('cart', JSON.stringify(productInfo));
         // let item = localStorage.getItem('cart');
         // cartArray.push(item);
-
-        function calcCartPrice() {
-            const cartItems = document.querySelectorAll('.cart-item');
-            const totalPriceEl = document.querySelector('.card-total__price');
-            let totalPrice = 0;
-
-            cartItems.forEach(function (item) {
-                const currentPrice = parseInt(item.querySelector('[data-price]').innerText);
-                totalPrice += currentPrice;
-            });
-            totalPriceEl.innerText = totalPrice;                // отображаем цену на странице
-        }
         calcCartPrice();
     } 
     
-    if (event.target.hasAttribute('data-delete')){
+    if (event.target.hasAttribute('data-delete')){                                      // очистка корзины
         modalCartWrapper.innerHTML = '';
         setTimeout(function() { alert("Корзина успешно очищена"); }, 1000);
     } 
+
+    if(event.target.classList.contains('card-img-top')) {                               // PopUp
+        const popup = document.querySelector('.popup');
+        const popupClose = document.querySelector('.popup__close');
+        popup.style.display = 'block';
+        popupClose.addEventListener('click', () => {
+            popup.style.display = 'none';
+        })
+    }
 });
+
+// ###############################################################################################################################################
+
+function calcCartPrice() {                                                              // подсчет суммы в корзине
+    const cartItems = document.querySelectorAll('.cart-item');
+    const totalPriceEl = document.querySelector('.card-total__price');
+    let totalPrice = 0;
+
+    cartItems.forEach(function (item) {
+        const currentPrice = parseInt(item.querySelector('[data-price]').innerText);
+        totalPrice += currentPrice;
+    });
+    totalPriceEl.innerText = totalPrice;                // отображаем цену на странице
+}
 // CART END
 // ################################################################################################################################################
 
@@ -120,7 +136,7 @@ window.addEventListener('click', function (event) {
 // ################################################################################################################################################
 // SEARCH START
 
-input.addEventListener('input', ({ target }) => {                       // при вводе в инпут фильтрует по названиям и отдает подходящие значения
+input.addEventListener('input', ({ target }) => {                                       // фильтр товаров
     let tempArray = productName.filter((el) =>
         (el.name + el.cost)
             .toLowerCase()
@@ -141,12 +157,12 @@ const btn = document.querySelector('.navbar__cart');                            
 const modalOverlay = document.querySelector('.modals__modal-overlay');                          // overlay     
 const modalCartWrapper = document.querySelector('.modals__cart-wrapper');                                                                 
 
-btn.addEventListener('click', (e) => {
+btn.addEventListener('click', (e) => {                                                          // модальное окно с содержимым корзины
     let path = e.currentTarget.getAttribute('data-path');                                       
     document.querySelector(`[data-target = "${path}"]`).classList.add('modals__modal_visible');
     modalOverlay.classList.add('modals__modal-overlay_visible'); 
 
-    if(modalOverlay.classList.contains('modals__modal-overlay_visible')) {                      //  при нажатии на кнопку корзины добавляем класс c visible
+    if(modalOverlay.classList.contains('modals__modal-overlay_visible')) {                      
         document.body.style.position = 'fixed';                                                 // запрещаем прокрутку body при открытом модальном окне
         document.body.style.top = `-${window.scrollY}px`;
     }                                          
